@@ -24,7 +24,6 @@
 #include "ScriptedGossip.h"
 #include "Config.h"
 #include "Battleground.h"
-#include "BattleGround.h"
 #include "solo3v3.h"
 
 class NpcSolo3v3 : public CreatureScript
@@ -54,7 +53,7 @@ class Solo3v3BG : public AllBattlegroundScript
 public:
     Solo3v3BG() : AllBattlegroundScript("Solo3v3_BG") {}
 
-    void OnQueueUpdate(BattlegroundQueue* queue, uint32 /*diff*/, BattlegroundTypeId bgTypeId, BattlegroundBracketId bracket_id, uint8 arenaType, bool isRated, uint32 /*arenaRatedTeamId*/);
+    void OnQueueUpdate(BattlegroundQueue* queue, uint32 /*diff*/, BattlegroundTypeId bgTypeId, BattlegroundBracketId bracket_id, uint8 arenaType, bool isRated, uint32 /*arenaRatedTeamId*/) override;
     void OnBattlegroundUpdate(Battleground* bg, uint32 /*diff*/) override;
 };
 
