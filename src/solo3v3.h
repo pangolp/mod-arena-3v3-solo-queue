@@ -23,11 +23,11 @@
 #include "BattlegroundMgr.h"
 #include "Player.h"
 
-constexpr uint32 ARENA_TEAM_SOLO_3v3 = 5;
-constexpr uint32 ARENA_TYPE_3v3_SOLO = 5;
-constexpr uint32 ARENA_SLOT_SOLO_3v3 = 2;
-constexpr uint32 BATTLEGROUND_QUEUE_3v3_SOLO = 10;
-constexpr BattlegroundQueueTypeId bgQueueTypeId = (BattlegroundQueueTypeId)((int)BATTLEGROUND_QUEUE_5v5);
+constexpr uint32 ARENA_TEAM_SOLO_3v3 = 3;
+constexpr uint32 ARENA_TYPE_3v3_SOLO = 3;
+constexpr uint32 ARENA_SLOT_SOLO_3v3 = 3;
+constexpr uint32 BATTLEGROUND_QUEUE_3v3_SOLO = 11;
+constexpr BattlegroundQueueTypeId bgQueueTypeId = (BattlegroundQueueTypeId)((int)BATTLEGROUND_QUEUE_3v3);
 
 const uint32 FORBIDDEN_TALENTS_IN_1V1_ARENA[] =
 {
