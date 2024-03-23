@@ -470,7 +470,7 @@ void Team3v3arena::OnGetArenaPoints(ArenaTeam* at, float& points)
 {
     if (at->GetType() == ARENA_TEAM_SOLO_3v3)
     {
-        points *= 0.64f;
+        points *= sConfigMgr->GetOption<float>("Solo.3v3.ArenaPointsMulti", 0.8f);
     }
 }
 
