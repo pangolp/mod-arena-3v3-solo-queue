@@ -221,6 +221,7 @@ bool NpcSolo3v3::ArenaCheckFullEquipAndTalents(Player* player)
         ChatHandler(player->GetSession()).SendSysMessage(err.str().c_str());
         return false;
     }
+
     return true;
 }
 
@@ -451,7 +452,7 @@ void Solo3v3BG::OnBattlegroundUpdate(Battleground* bg, uint32 /*diff*/)
 void ConfigLoader3v3Arena::OnAfterConfigLoad(bool /*Reload*/)
 {
     ArenaTeam::ArenaSlotByType.emplace(ARENA_TEAM_SOLO_3v3, ARENA_SLOT_SOLO_3v3);
-    ArenaTeam::ArenaReqPlayersForType.emplace(ARENA_TYPE_3v3_SOLO, 6);
+    ArenaTeam::ArenaReqPlayersForType.emplace(ARENA_TYPE_3v3_SOLO, 2); // 6);
 
     BattlegroundMgr::queueToBg.insert({ BATTLEGROUND_QUEUE_3v3_SOLO, BATTLEGROUND_AA });
     BattlegroundMgr::QueueToArenaType.emplace(BATTLEGROUND_QUEUE_3v3_SOLO, (ArenaType)ARENA_TYPE_3v3_SOLO);

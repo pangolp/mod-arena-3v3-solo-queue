@@ -23,11 +23,36 @@
 #include "BattlegroundMgr.h"
 #include "Player.h"
 
-constexpr uint32 ARENA_TEAM_SOLO_3v3 = 3;
-constexpr uint32 ARENA_TYPE_3v3_SOLO = 3;
-constexpr uint32 ARENA_SLOT_SOLO_3v3 = 3;
-constexpr uint32 BATTLEGROUND_QUEUE_3v3_SOLO = 11;
+enum AZTHArenaType
+{
+    ARENA_TYPE_1v1 = 1, // Custom 1v1 Arena Rated
+    ARENA_TYPE_3v3_SOLO = 4 // 3v3 soloqueue
+};
+
+enum AZTHArenaTeamType
+{
+    ARENA_TEAM_1v1 = 1, // Custom 1v1 Arena Rated
+    ARENA_TEAM_SOLO_3v3 = 4 // 3v3 soloqueue
+};
+
+enum AZTHArenaSlot
+{
+    ARENA_SLOT_1v1 = 3, // Custom 1v1 Arena Rated
+    ARENA_SLOT_SOLO_3v3 = 4 // 3v3 soloqueue
+};
+
+enum AZTHBattlegroundQueueTypeId
+{
+    BATTLEGROUND_QUEUE_1v1 = 11,
+    BATTLEGROUND_QUEUE_3v3_SOLO = 12
+};
+
+// constexpr uint32 ARENA_TEAM_SOLO_3v3 = 6;
+// constexpr uint32 ARENA_TYPE_3v3_SOLO = 6;
+// constexpr uint32 ARENA_SLOT_SOLO_3v3 = 6;
+// constexpr uint32 BATTLEGROUND_QUEUE_3v3_SOLO = 11;
 constexpr BattlegroundQueueTypeId bgQueueTypeId = (BattlegroundQueueTypeId)((int)BATTLEGROUND_QUEUE_3v3);
+
 
 const uint32 FORBIDDEN_TALENTS_IN_1V1_ARENA[] =
 {

@@ -215,7 +215,7 @@ bool Solo3v3::CheckSolo3v3Arena(BattlegroundQueue* queue, BattlegroundBracketId 
     queue->m_SelectionPools[TEAM_ALLIANCE].Init();
     queue->m_SelectionPools[TEAM_HORDE].Init();
 
-    uint32 MinPlayersPerTeam = 3;
+    uint32 MinPlayersPerTeam = 1; // 3;
 
     bool filterTalents = sConfigMgr->GetOption<bool>("Solo.3v3.FilterTalents", false);
 
@@ -354,8 +354,8 @@ bool Solo3v3::Arena3v3CheckTalents(Player* player)
         ChatHandler(player->GetSession()).SendSysMessage("You can't join, because you have invested to much points in a forbidden talent. Please edit your talents.");
         return false;
     }
-    else
-        return true;
+    
+    return true;
 }
 
 Solo3v3TalentCat Solo3v3::GetTalentCatForSolo3v3(Player* player)
