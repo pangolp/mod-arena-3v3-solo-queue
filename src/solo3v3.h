@@ -23,11 +23,20 @@
 #include "BattlegroundMgr.h"
 #include "Player.h"
 
-constexpr uint32 ARENA_TEAM_SOLO_3v3 = 3;
-constexpr uint32 ARENA_TYPE_3v3_SOLO = 3;
-constexpr uint32 ARENA_SLOT_SOLO_3v3 = 3;
-constexpr uint32 BATTLEGROUND_QUEUE_3v3_SOLO = 11;
+// Custom 1v1 Arena Rated
+constexpr uint32 ARENA_TYPE_1v1 = 1;
+constexpr uint32 ARENA_TEAM_1v1 = 1;
+constexpr uint32 ARENA_SLOT_1v1 = 3;
+constexpr uint32 BATTLEGROUND_QUEUE_1v1 = 11;
+constexpr BattlegroundQueueTypeId bgQueueTypeId1v1 = (BattlegroundQueueTypeId)((int)BATTLEGROUND_QUEUE_5v5 + 1);
+
+// custom 3v3 Arena
+constexpr uint32 ARENA_TEAM_SOLO_3v3 = 4;
+constexpr uint32 ARENA_TYPE_3v3_SOLO = 4;
+constexpr uint32 ARENA_SLOT_SOLO_3v3 = 4;
+constexpr uint32 BATTLEGROUND_QUEUE_3v3_SOLO = 12;
 constexpr BattlegroundQueueTypeId bgQueueTypeId = (BattlegroundQueueTypeId)((int)BATTLEGROUND_QUEUE_3v3);
+
 
 const uint32 FORBIDDEN_TALENTS_IN_1V1_ARENA[] =
 {
@@ -115,6 +124,7 @@ public:
 
     // Returns MELEE, RANGE or HEALER (depends on talent builds)
     Solo3v3TalentCat GetTalentCatForSolo3v3(Player* player);
+    Solo3v3TalentCat GetFirstAvailableSlot(bool soloTeam[][MAX_TALENT_CAT]);
 };
 
 #define sSolo Solo3v3::instance()
