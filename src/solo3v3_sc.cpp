@@ -441,6 +441,15 @@ void Solo3v3BG::OnQueueUpdate(BattlegroundQueue* queue, uint32 /*diff*/, Battleg
     }
 }
 
+bool Solo3v3BG::OnQueueUpdateValidity(BattlegroundQueue* /* queue */, uint32 /*diff*/, BattlegroundTypeId /* bgTypeId */, BattlegroundBracketId /* bracket_id */, uint8 arenaType, bool /* isRated */, uint32 /*arenaRatedTeamId*/)
+{
+    // if it's an arena 3v3soloQueue, return false to exit from BattlegroundQueueUpdate
+    if (arenaType == (ArenaType)ARENA_TYPE_3v3_SOLO)
+        return false;
+
+    return false;
+}
+
 void Solo3v3BG::OnBattlegroundUpdate(Battleground* bg, uint32 /*diff*/)
 {
     if (bg->GetStatus() != STATUS_IN_PROGRESS || !bg->isArena())
