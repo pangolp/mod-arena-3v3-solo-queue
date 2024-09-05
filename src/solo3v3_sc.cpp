@@ -158,6 +158,7 @@ bool NpcSolo3v3::OnGossipSelect(Player* player, Creature* creature, uint32 /*sen
                 s << "\nWeek Wins: " << at->GetStats().WeekWins;
 
                 ChatHandler(player->GetSession()).PSendSysMessage("{}", s.str().c_str());
+                CloseGossipMenuFor(player);
             }
 
             return true;
@@ -234,7 +235,7 @@ bool NpcSolo3v3::JoinQueueArena(Player* player, Creature* creature, bool isRated
         return false;
 
     uint8 arenatype = ARENA_TYPE_3v3_SOLO;
-    uint8 arenaslot = ArenaTeam::GetSlotByType(ARENA_TEAM_5v5);
+    uint8 arenaslot = ArenaTeam::GetSlotByType(ARENA_TYPE_3v3_SOLO);
     uint32 arenaRating = 0;
     uint32 matchmakerRating = 0;
 
@@ -506,7 +507,7 @@ void Team3v3arena::OnGetSlotByType(const uint32 type, uint8& slot)
 {
     if (type == ARENA_TEAM_SOLO_3v3)
     {
-        slot = 2;
+        slot = ARENA_SLOT_SOLO_3v3;
     }
 }
 
@@ -541,7 +542,7 @@ void PlayerScript3v3Arena::OnLogin(Player* pPlayer)
 
 void PlayerScript3v3Arena::GetCustomGetArenaTeamId(const Player* player, uint8 slot, uint32& id) const
 {
-    if (slot == 2)
+    if (slot == ARENA_SLOT_SOLO_3v3)
     {
         if (ArenaTeam* at = sArenaTeamMgr->GetArenaTeamByCaptain(player->GetGUID(), ARENA_TEAM_SOLO_3v3))
         {
@@ -552,7 +553,7 @@ void PlayerScript3v3Arena::GetCustomGetArenaTeamId(const Player* player, uint8 s
 
 void PlayerScript3v3Arena::GetCustomArenaPersonalRating(const Player* player, uint8 slot, uint32& rating) const
 {
-    if (slot == 2)
+    if (slot == ARENA_SLOT_SOLO_3v3)
     {
         if (ArenaTeam* at = sArenaTeamMgr->GetArenaTeamByCaptain(player->GetGUID(), ARENA_TEAM_SOLO_3v3))
         {
