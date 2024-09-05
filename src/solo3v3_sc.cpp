@@ -17,6 +17,14 @@
 
 #include "solo3v3_sc.h"
 
+uint32 playerArenaTeam3v3(Player* player) // OR GetArenaTeamByCaptain
+{
+    QueryResult queryPlayerTeam = CharacterDatabase.Query("SELECT `arenaTeamId` FROM `arena_team` WHERE `captainGuid`={} AND `type`=4", player->GetGUID().GetCounter());
+    if (queryPlayerTeam)
+        return (*queryPlayerTeam)[0].Get<int32>();
+    return 0;
+}
+
 void NpcSolo3v3::Initialize()
 {
     for (int i = 0; i < MAX_TALENT_CAT; i++)
@@ -52,7 +60,7 @@ bool NpcSolo3v3::OnGossipHello(Player* player, Creature* creature)
     if (player->InBattlegroundQueueForBattlegroundQueueType((BattlegroundQueueTypeId)BATTLEGROUND_QUEUE_3v3_SOLO))
         AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, "|TInterface/ICONS/Achievement_Arena_2v2_7:30|t Leave Solo queue", GOSSIP_SENDER_MAIN, 3, "Are you sure you want to remove the solo queue?", 0, false);
 
-    if (!player->GetArenaTeamId(ArenaTeam::GetSlotByType(ARENA_TEAM_SOLO_3v3)))
+    if (!playerArenaTeam3v3(player))
     {
         uint32 cost = sConfigMgr->GetOption<uint32>("Solo.3v3.Cost", 1);
 
@@ -145,7 +153,7 @@ bool NpcSolo3v3::OnGossipSelect(Player* player, Creature* creature, uint32 /*sen
 
         case 4: // get statistics
         {
-            ArenaTeam* at = sArenaTeamMgr->GetArenaTeamById(player->GetArenaTeamId(ArenaTeam::GetSlotByType(ARENA_TEAM_SOLO_3v3)));
+            ArenaTeam* at = sArenaTeamMgr->GetArenaTeamById(playerArenaTeam3v3(player));
             if (at)
             {
                 std::stringstream s;
@@ -166,7 +174,7 @@ bool NpcSolo3v3::OnGossipSelect(Player* player, Creature* creature, uint32 /*sen
         case 5: // Disband arenateam
         {
             WorldPacket Data;
-            Data << (uint32)player->GetArenaTeamId(ArenaTeam::GetSlotByType(ARENA_TEAM_SOLO_3v3));
+            Data << playerArenaTeam3v3(player);
             player->GetSession()->HandleArenaTeamLeaveOpcode(Data);
             ChatHandler(player->GetSession()).PSendSysMessage("Arena team deleted!");
             CloseGossipMenuFor(player);
@@ -235,7 +243,7 @@ bool NpcSolo3v3::JoinQueueArena(Player* player, Creature* creature, bool isRated
         return false;
 
     uint8 arenatype = ARENA_TYPE_3v3_SOLO;
-    uint8 arenaslot = ArenaTeam::GetSlotByType(ARENA_TYPE_3v3_SOLO);
+    // uint8 arenaslot = ArenaTeam::GetSlotByType(ARENA_TEAM_SOLO_3v3);
     uint32 arenaRating = 0;
     uint32 matchmakerRating = 0;
 
@@ -275,8 +283,8 @@ bool NpcSolo3v3::JoinQueueArena(Player* player, Creature* creature, bool isRated
 
     if (isRated)
     {
-        //ateamId = sSolo->playerArenaTeam(player);
-        ateamId = player->GetArenaTeamId(arenaslot);
+        //ateamId = sSolo->playerArenaTeam3v3(player);
+        ateamId = playerArenaTeam3v3(player);
         ArenaTeam* at = sArenaTeamMgr->GetArenaTeamById(ateamId);
         if (!at)
         {
@@ -317,10 +325,10 @@ bool NpcSolo3v3::CreateArenateam(Player* player, Creature* creature)
     if (!player || !creature)
         return false;
 
-    uint8 slot = ArenaTeam::GetSlotByType(ARENA_TEAM_SOLO_3v3);
+    // uint8 slot = ArenaTeam::GetSlotByType(ARENA_TEAM_SOLO_3v3);
 
     // Check if player is already in an arena team
-    if (player->GetArenaTeamId(slot))
+    if (playerArenaTeam3v3(player))
     {
         player->GetSession()->SendArenaTeamCommandResult(ERR_ARENA_TEAM_CREATE_S, player->GetName(), "", ERR_ALREADY_IN_ARENA_TEAM);
         return false;
