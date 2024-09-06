@@ -586,3 +586,111 @@ void PlayerScript3v3Arena::OnGetArenaTeamId(Player* player, uint8 slot, uint32& 
     if (slot == ArenaTeam::GetSlotByType(ARENA_TEAM_SOLO_3v3))
         result = player->GetArenaTeamIdFromDB(player->GetGUID(), ARENA_TEAM_SOLO_3v3);
 }
+
+bool PlayerScript3v3Arena::NotSetArenaTeamInfoField(Player* player, uint8 slot, ArenaTeamInfoType /* type */, uint32 /* value */)
+{
+    if (!player)
+        return false;
+
+    // [AZTH] avoid higher slots to be set in datafield
+    // if (slot == ArenaTeam::GetSlotByType(ARENA_TEAM_1v1))
+    // {
+    //     sAZTH->GetAZTHPlayer(player)->setArena1v1Info(type, value);
+    //     return false;
+    // }
+
+    if (slot == ArenaTeam::GetSlotByType(ARENA_TEAM_SOLO_3v3))
+    {
+        // sAZTH->GetAZTHPlayer(player)->setArena3v3Info(type, value);
+        return false;
+    }
+
+    return true;
+}
+
+
+bool PlayerScript3v3Arena::CanBattleFieldPort(Player* player, uint8 arenaType, BattlegroundTypeId BGTypeID, uint8 /*action*/)
+{
+    if (!player)
+        return false;
+
+    BattlegroundQueueTypeId bgQueueTypeId = BattlegroundMgr::BGQueueTypeId(BGTypeID, arenaType);
+    if (bgQueueTypeId == BATTLEGROUND_QUEUE_NONE)
+        return false;
+
+    // if ((bgQueueTypeId == (BattlegroundQueueTypeId)BATTLEGROUND_QUEUE_1v1 || bgQueueTypeId == (BattlegroundQueueTypeId)BATTLEGROUND_QUEUE_3v3_SOLO
+    //     && (action == 1 /*accept join*/  && !sSolo->Arena1v1CheckTalents(player)))
+    //     return false;
+
+    return true;
+}
+
+class Arena_SC : public ArenaScript
+{
+public:
+    Arena_SC() : ArenaScript("Arena_SC") { }
+
+    bool CanAddMember(ArenaTeam* team, ObjectGuid /* playerGuid */) override
+    {
+        if (!team)
+            return false;
+
+        if (!team->GetMembersSize())
+            return true;
+
+        if (/* team->GetType() == ARENA_TEAM_1v1 || */ team->GetType() == ARENA_TEAM_SOLO_3v3)
+            return false;
+
+        return true;
+    }
+
+    void OnGetPoints(ArenaTeam* team, uint32 /* memberRating */, float& points) override
+    {
+        if (!team)
+            return;
+
+        // if (team->GetType() == ARENA_TEAM_1v1)
+        //     points *= sConfigMgr->GetOption<float>("Azth.Rate.Arena1v1", 0.40f);
+
+        if (team->GetType() == ARENA_TEAM_SOLO_3v3)
+            points *= sConfigMgr->GetOption<float>("Solo.3v3.ArenaPointsMulti", 0.88f);
+    }
+
+    bool CanSaveToDB(ArenaTeam* team) override
+    {
+        if (team->GetId() >= MAX_ARENA_TEAM_ID)
+        {
+            sSolo->SaveSoloDB(team);
+            return false;
+        }
+
+        return true;
+    }
+};
+
+
+// class Spell_SC : public SpellSC
+// {
+// public:
+//     Spell_SC() : SpellSC("Spell_SC") { }
+
+//     bool CanSelectSpecTalent(Spell* spell) override
+//     {
+//         if (!spell)
+//             return false;
+
+//         if (spell->GetCaster()->isPlayer())
+//         {
+//             Player* plr = spell->GetCaster()->ToPlayer();
+
+//             if (plr->InBattlegroundQueueForBattlegroundQueueType((BattlegroundQueueTypeId)BATTLEGROUND_QUEUE_3v3_SOLO) /*||
+//                 plr->InBattlegroundQueueForBattlegroundQueueType((BattlegroundQueueTypeId)BATTLEGROUND_QUEUE_1v1)*/)
+//             {
+//                 plr->GetSession()->SendAreaTriggerMessage("You can't change your talents while in queue for 3v3."); // or 1v1
+//                 return false;
+//             }
+//         }
+
+//         return true;
+//     }
+// }
