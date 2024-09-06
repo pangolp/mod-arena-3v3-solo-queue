@@ -88,6 +88,7 @@ public:
     void GetCustomGetArenaTeamId(const Player* player, uint8 slot, uint32& id) const override;
     void GetCustomArenaPersonalRating(const Player* player, uint8 slot, uint32& rating) const override;
     void OnGetMaxPersonalArenaRatingRequirement(const Player* player, uint32 minslot, uint32& maxArenaRating) const override;
+    void OnGetArenaTeamId(Player* player, uint8 slot, uint32& result) override;
 };
 
 void AddSC_Solo_3v3_Arena()
