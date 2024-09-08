@@ -430,7 +430,7 @@ void NpcSolo3v3::fetchQueueList()
     }
 }
 
-void Solo3v3BG::OnQueueUpdate(BattlegroundQueue* queue, uint32 /*diff*/, BattlegroundTypeId bgTypeId, BattlegroundBracketId bracket_id, uint8 arenaType, bool isRated, uint32 /*arenaRatedTeamId*/)
+void Solo3v3BG::OnQueueUpdate(BattlegroundQueue* queue, uint32 /*diff*/, BattlegroundTypeId bgTypeId, BattlegroundBracketId bracket_id, uint8 arenaType, bool /* isRated */, uint32 /*arenaRatedTeamId*/)
 {
     if (arenaType != (ArenaType)ARENA_TYPE_3v3_SOLO)
         return;
@@ -447,7 +447,7 @@ void Solo3v3BG::OnQueueUpdate(BattlegroundQueue* queue, uint32 /*diff*/, Battleg
     // Solo 3v3
     if (sSolo->CheckSolo3v3Arena(queue, bracket_id))
     {
-        Battleground* arena = sBattlegroundMgr->CreateNewBattleground(bgTypeId, bracketEntry, arenaType, isRated);
+        Battleground* arena = sBattlegroundMgr->CreateNewBattleground(bgTypeId, bracketEntry, arenaType, true);
         if (!arena)
             return;
 
