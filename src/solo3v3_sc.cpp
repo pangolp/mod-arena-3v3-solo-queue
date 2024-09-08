@@ -628,18 +628,6 @@ void PlayerScript3v3Arena::OnLogin(Player* pPlayer)
     }
 }
 
-// not sure if this function is ever called, TODO: verify if the hook is called, if not, remove it
-void PlayerScript3v3Arena::GetCustomGetArenaTeamId(const Player* player, uint8 slot, uint32& id) const
-{
-    if (slot == ARENA_SLOT_SOLO_3v3)
-    {
-        if (ArenaTeam* at = sArenaTeamMgr->GetArenaTeamByCaptain(player->GetGUID(), ARENA_TYPE_3v3_SOLO))
-        {
-            id = at->GetId();
-        }
-    }
-}
-
 void PlayerScript3v3Arena::OnGetArenaPersonalRating(Player* player, uint8 slot, uint32& rating)
 {
     if (slot == ARENA_SLOT_SOLO_3v3)

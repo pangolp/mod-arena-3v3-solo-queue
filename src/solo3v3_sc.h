@@ -99,7 +99,6 @@ public:
     PlayerScript3v3Arena() : PlayerScript("player_script_3v3_arena") {}
 
     void OnLogin(Player* pPlayer) override;
-    void GetCustomGetArenaTeamId(const Player* player, uint8 slot, uint32& id) const override;
     void OnGetArenaPersonalRating(Player* player, uint8 slot, uint32& rating) override;
     void OnGetMaxPersonalArenaRatingRequirement(const Player* player, uint32 minslot, uint32& maxArenaRating) const override;
     void OnGetArenaTeamId(Player* player, uint8 slot, uint32& result) override;
