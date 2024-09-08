@@ -642,6 +642,11 @@ void PlayerScript3v3Arena::OnGetArenaPersonalRating(Player* player, uint8 slot, 
 
 void PlayerScript3v3Arena::OnGetMaxPersonalArenaRatingRequirement(const Player* player, uint32 minslot, uint32& maxArenaRating) const
 {
+    if (!sConfigMgr->GetOption<bool>("Solo.3v3.VendorRating", true))
+    {
+        return;
+    }
+
     if (minslot < 6)
     {
         if (ArenaTeam* at = sArenaTeamMgr->GetArenaTeamByCaptain(player->GetGUID(), ARENA_TYPE_3v3_SOLO))
