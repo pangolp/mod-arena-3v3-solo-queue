@@ -38,16 +38,18 @@ bool NpcSolo3v3::OnGossipHello(Player* player, Creature* creature)
 
     fetchQueueList();
     std::stringstream infoQueue;
-    infoQueue << "Solo 3vs3 Arena\n";
-    infoQueue << "Queued Players: " << (cache3v3Queue[MELEE] + cache3v3Queue[RANGE] + cache3v3Queue[HEALER]);
 
-    if (sConfigMgr->GetOption<bool>("Solo.3v3.FilterTalents", false))
-    {
-        infoQueue << "\n\n";
-        infoQueue << "Queued Melees: " << cache3v3Queue[MELEE] << " (Longer Queues!)" << "\n";
-        infoQueue << "Queued Casters: " << cache3v3Queue[RANGE] << " (Longer Queues!)" << "\n";
-        infoQueue << "Queued Healers: " << cache3v3Queue[HEALER] << " (Bonus Rewards!)" << "\n";
-    }
+    infoQueue << " ---------------------------------------------";
+    infoQueue << "\n               " << (cache3v3Queue[MELEE] + cache3v3Queue[RANGE] + cache3v3Queue[HEALER]) << " Queued Player(s)";
+    infoQueue << "\n                 |TInterface/ICONS/ability_rogue_shadowstrikes:21:21:0:11|t       |TInterface/ICONS/spell_shadow_shadowembrace:21:21:0:11|t        |TInterface/ICONS/spell_holy_holynova:21:21:0:11|t";
+    infoQueue << "\n\n              Melee  Caster  Healer";
+    infoQueue << "\n                 [" << cache3v3Queue[MELEE] << "]        [" << cache3v3Queue[RANGE] << "]        [" << cache3v3Queue[HEALER] << "]";
+    infoQueue << "\n\n   |TInterface\\icons\\inv_jewelry_talisman_04:17:17:0:30|t [" << cache3v3Queue[SHAMAN] << "]  " << " |TInterface\\icons\\inv_hammer_01:17:17:0:30|t [" << cache3v3Queue[PALADIN] << "]  "
+        << " |TInterface\\icons\\inv_sword_27:17:17:0:30|t [" << cache3v3Queue[WARRIOR] << "]  " << " |TInterface\\icons\\inv_misc_monsterclaw_04:17:17:0:30|t [" << cache3v3Queue[DRUID] << "]  "
+        << " |TInterface\\icons\\spell_deathknight_classicon:17:17:0:30|t [" << cache3v3Queue[DK] << "]" << "\n   |TInterface\\icons\\spell_nature_drowsy:17:17:0:30|t [" << cache3v3Queue[WARLOCK] << "]  "
+        << " |TInterface\\icons\\inv_staff_30:17:17:0:30|t [" << cache3v3Queue[PRIEST] << "]  " << " |TInterface\\icons\\inv_weapon_bow_07:17:17:0:30|t [" << cache3v3Queue[HUNTER] << "]  "
+        << " |TInterface\\icons\\inv_staff_13:17:17:0:30|t [" << cache3v3Queue[MAGE] << "]  " << " |TInterface\\icons\\inv_throwingknife_04:17:17:0:30|t [" << cache3v3Queue[ROGUE] << "]";
+    AddGossipItemFor(player, GOSSIP_ICON_CHAT, infoQueue.str().c_str(), GOSSIP_SENDER_MAIN, 0);
 
     if (player->InBattlegroundQueueForBattlegroundQueueType((BattlegroundQueueTypeId)BATTLEGROUND_QUEUE_3v3_SOLO))
         AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, "|TInterface/ICONS/Achievement_Arena_2v2_7:30|t Leave Solo queue", GOSSIP_SENDER_MAIN, NPC_3v3_ACTION_LEAVE_QUEUE, "Are you sure you want to remove the solo queue?", 0, false);
@@ -55,7 +57,6 @@ bool NpcSolo3v3::OnGossipHello(Player* player, Creature* creature)
     if (!player->GetArenaTeamId(ArenaTeam::GetSlotByType(ARENA_TYPE_3v3_SOLO)))
     {
         uint32 cost = sConfigMgr->GetOption<uint32>("Solo.3v3.Cost", 1);
-
         if (player->IsPvP())
             cost = 0;
 
@@ -384,6 +385,42 @@ void NpcSolo3v3::fetchQueueList()
                     Player* _player = ObjectAccessor::FindPlayer(playerGuid);
                     if (!_player)
                         continue;
+
+                    switch (_player->getClass())
+                    {
+                        case CLASS_WARRIOR:
+                            cache3v3Queue[WARRIOR]++;
+                            break;
+                        case CLASS_PALADIN:
+                            cache3v3Queue[PALADIN]++;
+                            break;
+                        case CLASS_DEATH_KNIGHT:
+                            cache3v3Queue[DK]++;
+                            break;
+                        case CLASS_HUNTER:
+                            cache3v3Queue[HUNTER]++;
+                            break;
+                        case CLASS_SHAMAN:
+                            cache3v3Queue[SHAMAN]++;
+                            break;
+                        case CLASS_ROGUE:
+                            cache3v3Queue[ROGUE]++;
+                            break;
+                        case CLASS_DRUID:
+                            cache3v3Queue[DRUID]++;
+                            break;
+                        case CLASS_MAGE:
+                            cache3v3Queue[MAGE]++;
+                            break;
+                        case CLASS_WARLOCK:
+                            cache3v3Queue[WARLOCK]++;
+                            break;
+                        case CLASS_PRIEST:
+                            cache3v3Queue[PRIEST]++;
+                            break;
+                        default:
+                            break;
+                    }
 
                     Solo3v3TalentCat plrCat = sSolo->GetTalentCatForSolo3v3(_player); // get talent cat
                     cache3v3Queue[plrCat]++;
