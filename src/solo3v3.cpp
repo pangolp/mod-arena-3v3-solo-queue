@@ -242,7 +242,7 @@ bool Solo3v3::Arena3v3CheckTalents(Player* player)
     if (!player)
         return false;
 
-    if (sConfigMgr->GetOption<bool>("Arena.3v3.BlockForbiddenTalents", false) == false)
+    if (!sConfigMgr->GetOption<bool>("Arena.3v3.BlockForbiddenTalents", false))
         return true;
 
     uint32 count = 0;
