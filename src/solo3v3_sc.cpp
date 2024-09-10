@@ -54,6 +54,9 @@ bool NpcSolo3v3::OnGossipHello(Player* player, Creature* creature)
     if (player->InBattlegroundQueueForBattlegroundQueueType((BattlegroundQueueTypeId)BATTLEGROUND_QUEUE_3v3_SOLO))
         AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, "|TInterface/ICONS/Achievement_Arena_2v2_7:30|t Leave Solo queue", GOSSIP_SENDER_MAIN, NPC_3v3_ACTION_LEAVE_QUEUE, "Are you sure you want to remove the solo queue?", 0, false);
 
+    if (!player->InBattlegroundQueueForBattlegroundQueueType((BattlegroundQueueTypeId)BATTLEGROUND_QUEUE_3v3_SOLO))
+        AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, "|TInterface/ICONS/Achievement_Arena_3v3_5:30|t Queue up for 3vs3 Arena Solo (UnRated)\n", GOSSIP_SENDER_MAIN, NPC_3v3_ACTION_JOIN_QUEUE_ARENA_UNRATED);
+
     if (!player->GetArenaTeamId(ARENA_SLOT_SOLO_3v3))
     {
         uint32 cost = sConfigMgr->GetOption<uint32>("Solo.3v3.Cost", 1);
@@ -66,8 +69,7 @@ bool NpcSolo3v3::OnGossipHello(Player* player, Creature* creature)
     {
         if (!player->InBattlegroundQueueForBattlegroundQueueType((BattlegroundQueueTypeId)BATTLEGROUND_QUEUE_3v3_SOLO))
         {
-            //AddGossipItemFor(player,GOSSIP_ICON_INTERACT_1, "Queue up for 1vs1 Wargame\n", GOSSIP_SENDER_MAIN, 20);
-            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, "|TInterface/ICONS/Achievement_Arena_3v3_5:30|t Queue up for 3vs3 Arena Solo\n", GOSSIP_SENDER_MAIN, NPC_3v3_ACTION_JOIN_QUEUE_ARENA_RATED);
+            AddGossipItemFor(player, GOSSIP_ICON_INTERACT_1, "|TInterface/ICONS/Achievement_Arena_3v3_5:30|t Queue up for 3vs3 Arena Solo (Rated)\n", GOSSIP_SENDER_MAIN, NPC_3v3_ACTION_JOIN_QUEUE_ARENA_RATED);
             AddGossipItemFor(player, GOSSIP_ICON_CHAT, "|TInterface/ICONS/Achievement_Arena_2v2_7:30|t Disband Arena team", GOSSIP_SENDER_MAIN, NPC_3v3_ACTION_DISBAND_ARENATEAM, "Are you sure?", 0, false);
         }
 
@@ -123,6 +125,24 @@ bool NpcSolo3v3::OnGossipSelect(Player* player, Creature* creature, uint32 /*sen
             }
             else
                 if (ArenaCheckFullEquipAndTalents(player) && JoinQueueArena(player, creature, true) == false)
+                    ChatHandler(player->GetSession()).SendSysMessage("Something went wrong while joining queue. Already in another queue?");
+
+            CloseGossipMenuFor(player);
+            return true;
+        }
+
+
+        case NPC_3v3_ACTION_JOIN_QUEUE_ARENA_UNRATED:
+        {
+            // check Deserter debuff
+            if (player->HasAura(26013) && (sConfigMgr->GetOption<bool>("Solo.3v3.CastDeserterOnAfk", true) || sConfigMgr->GetOption<bool>("Solo.3v3.CastDeserterOnLeave", true)))
+            {
+                WorldPacket data;
+                sBattlegroundMgr->BuildGroupJoinedBattlegroundPacket(&data, ERR_GROUP_JOIN_BATTLEGROUND_DESERTERS);
+                player->GetSession()->SendPacket(&data);
+            }
+            else
+                if (ArenaCheckFullEquipAndTalents(player) && JoinQueueArena(player, creature, false) == false)
                     ChatHandler(player->GetSession()).SendSysMessage("Something went wrong while joining queue. Already in another queue?");
 
             CloseGossipMenuFor(player);
@@ -443,10 +463,10 @@ void Solo3v3BG::OnQueueUpdate(BattlegroundQueue* queue, uint32 /*diff*/, Battleg
     if (!bracketEntry)
         return;
 
-    // Solo 3v3
     if (sSolo->CheckSolo3v3Arena(queue, bracket_id))
     {
-        Battleground* arena = sBattlegroundMgr->CreateNewBattleground(bgTypeId, bracketEntry, arenaType, true);
+        const bool _isRated = true;
+        Battleground* arena = sBattlegroundMgr->CreateNewBattleground(bgTypeId, bracketEntry, arenaType, _isRated);
         if (!arena)
             return;
 
